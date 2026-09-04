@@ -1,0 +1,11 @@
+weights:
+  ci_instability: 0.25
+  pr_size: 0.20
+  rework: 0.20
+  review_friction: 0.15
+  component_risk: 0.20
+
+thresholds:
+  low_max: 39
+  medium_max: 69
+  high_min: 70
