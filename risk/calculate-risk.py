@@ -74,13 +74,15 @@ def main():
     org_score = round(sum(result["score"] * result["pull_requests"] for result in results.values()) / org_prs)
 
     lines = []
-    lines.append("# Engineering Risk Heatmap")
+    lines.append("# Software Delivery Risk Heatmap")
     lines.append("")
-    lines.append(f"**Organization Risk:** {org_score}/100 {level(org_score, thresholds)}")
+    lines.append(f"**Organization Delivery Risk:** {org_score}/100 {level(org_score, thresholds)}")
+    lines.append("")
+    lines.append("> Delivery Risk estimates the concentration of signals that may make software delivery less predictable, stable, or sustainable.")
     lines.append("")
     lines.append("## Organization Heatmap")
     lines.append("")
-    lines.append("| Team | Risk Score | Status |")
+    lines.append("| Team | Delivery Risk Score | Status |")
     lines.append("|---|---:|---|")
     for team, score in sorted(team_results.items(), key=lambda x: x[1], reverse=True):
         lines.append(f"| {team.title()} | {score} | {level(score, thresholds)} |")
@@ -88,7 +90,7 @@ def main():
     lines.append("")
     lines.append("## Service Drill-down")
     lines.append("")
-    lines.append("| Team | Service | Risk | Status | PRs |")
+    lines.append("| Team | Service | Delivery Risk | Status | PRs |")
     lines.append("|---|---|---:|---|---:|")
     for service_name, result in sorted(results.items(), key=lambda x: x[1]["score"], reverse=True):
         lines.append(f"| {result['team'].title()} | {service_name.title()} | {result['score']} | {level(result['score'], thresholds)} | {result['pull_requests']} |")
@@ -110,10 +112,10 @@ def main():
     highest_service = max(results, key=lambda name: results[name]["score"])
     highest_result = results[highest_service]
     top_driver = max(highest_result["contributions"], key=highest_result["contributions"].get)
-    lines.append(f"- Highest-risk team: **{highest_team.title()} ({team_results[highest_team]}/100)**")
-    lines.append(f"- Highest-risk service: **{highest_service.title()} ({highest_result['score']}/100)**")
+    lines.append(f"- Highest Delivery Risk team: **{highest_team.title()} ({team_results[highest_team]}/100)**")
+    lines.append(f"- Highest Delivery Risk service: **{highest_service.title()} ({highest_result['score']}/100)**")
     lines.append(f"- Main driver of the highest-risk service: **{top_driver}**")
-    lines.append("- Suggested discussion: reduce the dominant engineering signal and rerun the workflow to observe the score change.")
+    lines.append("- Suggested discussion: identify an engineering action that reduces the dominant signal and rerun the workflow to observe the score change.")
 
     REPORT_FILE.parent.mkdir(parents=True, exist_ok=True)
     REPORT_FILE.write_text("\n".join(lines) + "\n")
