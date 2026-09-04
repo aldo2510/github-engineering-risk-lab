@@ -1,13 +1,17 @@
-# Lab — Engineering Risk Heatmap
+# Lab — Engineering Delivery Risk Heatmap
 
 ## 🎯 Objetivo
 
-Construir un pequeño **Engineering Risk Engine** que transforme señales de ingeniería en un mapa de riesgo por equipo y servicio.
+Construir un pequeño **Engineering Delivery Risk Engine** que transforme señales de ingeniería en un mapa de riesgo de entrega por equipo y servicio.
+
+La pregunta central es:
+
+> **¿Dónde se está concentrando el riesgo de entrega de software y por qué?**
 
 La idea central es:
 
 ```text
-Signals → Risk Score → Threshold → Heatmap → Drill-down → Action
+Engineering Signals → Delivery Risk Score → Threshold → Heatmap → Drill-down → Action
 ```
 
 El laboratorio usa datos sintéticos para representar una organización que no necesariamente tiene repositorios reales separados por dominio.
@@ -24,28 +28,27 @@ Imagina que eres responsable de Engineering Management y tienes tres equipos:
 
 Cada equipo tiene servicios asociados.
 
-La pregunta no es simplemente:
-
-> ¿Cuántos PR tenemos?
-
-La pregunta es:
-
-> **¿Dónde se está concentrando el riesgo de ingeniería y por qué?**
+El objetivo **no es medir si un equipo trabaja bien o mal**. El objetivo es detectar señales que indiquen que la entrega de software puede estar perdiendo estabilidad, velocidad o previsibilidad.
 
 ---
 
-## 2. Señales utilizadas
+## 2. ¿Riesgo de qué?
 
-El laboratorio considera señales como:
+Este laboratorio mide **Software Delivery Risk**: el riesgo de que un equipo o servicio tenga dificultades para entregar cambios de software de forma **predecible, estable y sostenible**.
 
-| Señal | Qué representa |
+No es directamente un score de riesgo financiero ni un score de ciberseguridad.
+
+Las señales utilizadas representan distintos tipos de riesgo de delivery:
+
+| Señal | Qué riesgo representa |
 |---|---|
-| `pull_requests` | Volumen de cambios |
-| `failed_workflows` | Inestabilidad del CI |
-| `average_review_hours` | Fricción en reviews |
-| `rework_rate` | Trabajo que vuelve a modificarse |
-| `large_prs` | Cambios grandes y difíciles de revisar |
-| `component_risk` | Criticidad del componente |
+| `failed_workflows` | Riesgo de **inestabilidad del CI/CD** |
+| `large_prs` | Riesgo de **cambios difíciles de revisar** |
+| `rework_rate` | Riesgo de **calidad y retrabajo** |
+| `average_review_hours` | Riesgo de **cuello de botella en reviews** |
+| `component_risk` | Riesgo de **alto impacto por criticidad del componente** |
+
+`pull_requests` se utiliza principalmente para ponderar los resultados por volumen de cambios.
 
 Estas señales son **datos de laboratorio**. En una implementación real podrían alimentarse desde las APIs de GitHub.
 
@@ -56,7 +59,7 @@ Estas señales son **datos de laboratorio**. En una implementación real podría
 Cada señal se normaliza a una escala de 0–100 y se combina mediante pesos.
 
 ```text
-Risk Score =
+Delivery Risk Score =
     CI Instability  × 25%
   + PR Size         × 20%
   + Rework          × 20%
@@ -70,6 +73,14 @@ Umbrales:
 0–39   🟢 LOW
 40–69  🟡 MEDIUM
 70–100 🔴 HIGH
+```
+
+La interpretación es:
+
+```text
+LOW     → señales de delivery bajo control
+MEDIUM  → señales que requieren atención
+HIGH    → concentración significativa de riesgo de delivery
 ```
 
 ---
@@ -89,7 +100,7 @@ El workflow:
 1. Instala Python.
 2. Lee los datos de `risk/sample-data.yml`.
 3. Ejecuta `risk/calculate-risk.py`.
-4. Calcula el riesgo por servicio.
+4. Calcula el riesgo de entrega por servicio.
 5. Agrega el riesgo por equipo.
 6. Genera un resumen en **GitHub Actions Job Summary**.
 7. Publica un artefacto con el reporte Markdown.
@@ -122,14 +133,22 @@ Loans        🟡 MEDIUM
 Para el servicio de mayor riesgo se muestran sus principales drivers:
 
 ```text
-CI instability       +25
+CI instability       +23
 PR size              +20
 Rework               +18
-Review friction      +13
-Component risk        +8
+Component risk       +18
+Review friction      +14
                      ───
-                      84
+                      92
 ```
+
+La conversación de management debería pasar de:
+
+> "Payments tiene muchos PRs"
+
+a:
+
+> **"Payments tiene un Delivery Risk alto. ¿Qué señales lo están provocando y qué acción podemos tomar para reducirlo?"**
 
 ---
 
@@ -153,16 +172,17 @@ a:
 failed_workflows: 12
 ```
 
-Vuelve a ejecutar el workflow y observa cómo cambia el Risk Score.
+Vuelve a ejecutar el workflow y observa cómo cambia el **Delivery Risk Score**.
 
 ### Preguntas para discusión
 
-1. ¿Qué equipo presenta mayor riesgo?
-2. ¿Qué servicio explica la mayor parte del riesgo?
-3. ¿Cuál es el principal driver?
+1. ¿Qué equipo presenta mayor Delivery Risk?
+2. ¿Qué servicio explica la mayor concentración de riesgo?
+3. ¿Cuál es el principal driver del riesgo?
 4. ¿Qué pasaría si reducimos los fallos de CI?
-5. ¿Un Risk Score alto significa necesariamente que el equipo trabaja mal?
+5. ¿Un Delivery Risk alto significa necesariamente que el equipo trabaja mal?
 6. ¿Qué señales adicionales incorporarías en una organización real?
+7. ¿Qué acción de Engineering Management tendría mayor impacto sobre el score?
 
 ---
 
@@ -180,10 +200,10 @@ GitHub API
    └── Commits
           │
           ▼
-    Risk Engine
+   Delivery Risk Engine
           │
           ▼
- Engineering Risk
+ Software Delivery Risk
           │
           ▼
       Heatmap
@@ -199,4 +219,4 @@ El valor no está en crear otro dashboard.
 
 El valor está en conectar:
 
-**Engineering Signals → Risk → Prioritization → Management Action**
+**Engineering Signals → Delivery Risk → Prioritization → Management Action**
