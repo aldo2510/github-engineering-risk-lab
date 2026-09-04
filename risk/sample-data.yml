@@ -1,0 +1,54 @@
+services:
+  web:
+    team: digital
+    pull_requests: 10
+    failed_workflows: 2
+    average_review_hours: 9
+    rework_rate: 0.10
+    large_prs: 1
+    component_risk: 25
+
+  mobile:
+    team: digital
+    pull_requests: 14
+    failed_workflows: 6
+    average_review_hours: 15
+    rework_rate: 0.24
+    large_prs: 4
+    component_risk: 55
+
+  payments:
+    team: financial
+    pull_requests: 16
+    failed_workflows: 9
+    average_review_hours: 19
+    rework_rate: 0.31
+    large_prs: 6
+    component_risk: 90
+
+  loans:
+    team: financial
+    pull_requests: 12
+    failed_workflows: 5
+    average_review_hours: 14
+    rework_rate: 0.22
+    large_prs: 3
+    component_risk: 70
+
+  cicd:
+    team: platform
+    pull_requests: 8
+    failed_workflows: 2
+    average_review_hours: 8
+    rework_rate: 0.08
+    large_prs: 1
+    component_risk: 45
+
+  infrastructure:
+    team: platform
+    pull_requests: 7
+    failed_workflows: 1
+    average_review_hours: 7
+    rework_rate: 0.06
+    large_prs: 1
+    component_risk: 60
