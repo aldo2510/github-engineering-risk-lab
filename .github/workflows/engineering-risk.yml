@@ -1,0 +1,41 @@
+name: Engineering Risk Heatmap
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'risk/**'
+      - 'lab.md'
+      - '.github/workflows/engineering-risk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  risk-analysis:
+    name: Calculate Engineering Risk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Calculate risk
+        run: python risk/calculate-risk.py
+
+      - name: Publish Job Summary
+        run: cat dashboard/risk-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload risk report
+        uses: actions/upload-artifact@v4
+        with:
+          name: engineering-risk-report
+          path: dashboard/risk-report.md
