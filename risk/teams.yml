@@ -1,0 +1,18 @@
+teams:
+  - id: digital
+    name: Digital
+    services:
+      - web
+      - mobile
+
+  - id: financial
+    name: Financial
+    services:
+      - payments
+      - loans
+
+  - id: platform
+    name: Platform
+    services:
+      - cicd
+      - infrastructure
