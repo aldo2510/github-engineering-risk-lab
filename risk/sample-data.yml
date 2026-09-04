@@ -1,3 +1,5 @@
+# Synthetic signals for the classroom exercise.
+# Increase a signal and rerun the workflow to observe risk movement.
 services:
   web:
     team: digital
